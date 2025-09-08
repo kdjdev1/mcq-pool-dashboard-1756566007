@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCQ POOL Dashboard</title>
+    <title>MCQ Master Dashboard</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for data visualization -->
@@ -61,8 +61,7 @@
     <div id="upload-section" class="flex items-center justify-center min-h-screen bg-slate-50">
         <div class="container mx-auto p-4 sm:p-6 lg:p-8 text-center">
             <header class="mb-10">
-                <img src="https://sakya.edu.lk/assets/images/logo/logo.png" alt="Sakya Education Logo" class="mx-auto h-16 w-auto mb-4">
-                <h1 class="text-4xl font-bold text-slate-800 tracking-tight">MCQ POOL Dashboard</h1>
+                <h1 class="text-4xl font-bold text-slate-800 tracking-tight">MCQ Master Dashboard</h1>
                 <p class="text-slate-500 mt-2">Dynamic analysis of student performance data.</p>
             </header>
             <div class="bg-white max-w-2xl mx-auto shadow-sm rounded-xl p-8 border border-slate-200">
@@ -97,7 +96,7 @@
         <!-- Sidebar -->
         <aside class="w-64 flex-shrink-0 bg-slate-800 text-slate-300 flex flex-col">
             <div class="h-20 flex items-center justify-center p-4 bg-slate-900">
-                <img src="https://sakya.edu.lk/assets/images/logo/logo.png" alt="Sakya Education Logo" class="h-10 w-auto"/>
+                 <h2 class="text-xl font-bold text-white">MCQ Master</h2>
             </div>
             <nav id="sidebar-nav" class="flex-1 px-4 py-6 space-y-2">
                 <button onclick="changeView(event, 'overview')" class="w-full flex items-center py-2.5 px-4 rounded-lg transition-colors duration-200 sidebar-link sidebar-active">
@@ -235,7 +234,7 @@
                 </div>
             </main>
             <footer class="text-center py-4 px-8 text-xs text-slate-500 bg-white border-t border-slate-200">
-                <p>&copy; 2025 <a href="https://sakya.edu.lk" target="_blank" class="text-indigo-600 hover:underline font-semibold">Sakya</a> MCQ POOL Dashboard | Built with ❤️ for Sakya MCQ POOL Team</p>
+                <p>&copy; 2025 MCQ Master Dashboard | Built with ❤️ for Sri Lankan Students & Teachers</p>
                 <p class="mt-1">Developed by <a href="https://pasindulakshan.com" target="_blank" class="text-indigo-600 hover:underline font-semibold">Pasindu Lakshan Perera</a></p>
             </footer>
         </div>
@@ -379,11 +378,20 @@
         questionColumns = headers.filter(h => h.toLowerCase().includes('[question'));
 
         const processedData = data.map(row => {
-            const score = parseInt(row['Score'], 10);
+            let score = 0;
+            const scoreValue = row['Score'];
+
+            // Handle scores in "X / Y" format, common in Google Forms, for better accuracy
+            if (typeof scoreValue === 'string' && scoreValue.includes('/')) {
+                score = parseInt(scoreValue.split('/')[0].trim(), 10);
+            } else {
+                score = parseInt(scoreValue, 10);
+            }
+            
             return {
-                id: row['Student ID'] || 'N/A',
-                name: row['Student Name'] || 'N/A',
-                branch: row['Select Your Branch'] || 'Unknown',
+                id: String(row['Student ID'] || 'N/A').trim(),
+                name: String(row['Student Name'] || 'N/A').trim(),
+                branch: String(row['Select Your Branch'] || 'Unknown').trim(),
                 score: isNaN(score) ? 0 : score,
                 responses: questionColumns.reduce((acc, col) => {
                     acc[col] = row[col];
@@ -499,7 +507,7 @@
                         title: { display: true, text: yAxisLabel }, 
                         grid: { color: '#e2e8f0' },
                          ticks: {
-                             callback: function(value) {
+                            callback: function(value) {
                                 return showPercentage ? value.toFixed(1) + '%' : value;
                             }
                         }
@@ -562,9 +570,9 @@
         studentData.slice(0, displayCount).forEach((student) => {
             const medalIcon = student.rank <= 3
                 ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ${medalColors[student.rank - 1]}" viewBox="0 0 20 20" fill="currentColor">
-                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-1 1v1.618a4.993 4.993 0 00-4.163 4.162V12a1 1 0 102 0v-3.22a3 3 0 013-3h.013a3 3 0 013 3V12a1 1 0 102 0V9.779a4.993 4.993 0 00-4.162-4.162V3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                     <path d="M5.221 14.368a1 1 0 01.44-1.336 4.993 4.993 0 016.678 0 1 1 0 01.44 1.336l-3.339 4.23a1 1 0 01-1.558 0l-3.339-4.23z" />
-                   </svg>`
+                           <path fill-rule="evenodd" d="M9 2a1 1 0 00-1 1v1.618a4.993 4.993 0 00-4.163 4.162V12a1 1 0 102 0v-3.22a3 3 0 013-3h.013a3 3 0 013 3V12a1 1 0 102 0V9.779a4.993 4.993 0 00-4.162-4.162V3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                           <path d="M5.221 14.368a1 1 0 01.44-1.336 4.993 4.993 0 016.678 0 1 1 0 01.44 1.336l-3.339 4.23a1 1 0 01-1.558 0l-3.339-4.23z" />
+                         </svg>`
                 : `<div class="w-6 h-6 flex items-center justify-center text-sm font-bold text-slate-500">${student.rank}</div>`;
 
             const listItem = `
